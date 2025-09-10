@@ -1,0 +1,175 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8, #e4e7eb);
+        }
+
+        /* Classes para a cor laranja */
+        .text-orange-custom {
+            color: #FFA500;
+        }
+
+        .bg-orange-custom {
+            background-color: #FFA500;
+        }
+
+        .border-orange-custom {
+            border-color: #FFA500;
+        }
+
+        /* Estilos do card para todas as telas (abordagem mobile-first) */
+        .login-card {
+            transform: translateY(0);
+            transition: transform 0.3s ease-in-out, width 0.5s ease-in-out;
+            width: 70vw;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Estilos para telas maiores que 950px () */
+        @media (max-width: 991px) {
+            .login-card {
+                width: 70vw;
+                height: 75vh;
+                //max-width: 400px; /* Limita a largura para evitar que fique muito grande em monitores largos */
+            }
+            /* Redimensionando fontes e elementos para PC */
+            .login-card h1 { font-size: 6vw; }
+            .login-card p { font-size: 4vw; }
+            .login-card label,
+            .login-card input,
+            .login-card button,
+            .login-card a {
+                font-size: 5vw;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="login-card bg-white p-8 rounded-3xl shadow-xl border-t-4 border-orange-custom">
+        <div class="flex flex-col items-center mb-6">
+            <img src="https://lh3.googleusercontent.com/d/14HTizsoRJHxGTHxn4gX0ClMbYKgU2slA" alt="Logo" class="w-24 h-24 rounded-full mb-4 shadow-md border-2 border-orange-200">
+            <h1 class="font-bold text-center text-orange-custom text-2xl" id="loginTitle">Acesso</h1><br>
+            <p class="text-gray-500 text-lg">Bem-vindo(a) de volta!</p>
+        </div>
+
+        <div id="message" class="hidden p-3 mb-4 rounded-lg text-center font-medium text-sm" role="alert"></div>
+
+        <div class="mb-4">
+            <label for="uid" class="block text-gray-700 font-medium">Login</label>
+            <input type="text" id="uid" placeholder="Seu login" required oninput="hideMessage()"
+                class="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-orange-custom transition duration-300">
+        </div>
+
+        <div class="mb-6">
+            <label for="pass" class="block text-gray-700 font-medium">Senha</label>
+            <input type="password" id="pass" placeholder="Sua senha" required oninput="hideMessage()"
+                class="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-orange-custom transition duration-300">
+        </div>
+
+        <div class="flex flex-col space-y-4">
+            <button type="button" onclick="login()" id="loginBtn"
+                class="w-full bg-orange-custom text-white font-semibold rounded-lg shadow-md p-3 hover:bg-orange-600 transition duration-300 transform hover:scale-105">
+                Entrar
+            </button>
+            <a href="javascript:void(0)" onclick="openRegisterPage()" class="text-center text-orange-custom hover:underline transition duration-300"><br>
+                Não tem conta?<br>Registre-se
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Oculta a mensagem de erro/sucesso
+        function hideMessage() {
+            console.log("Ocultando mensagem.");
+            const messageDiv = document.getElementById('message');
+            messageDiv.classList.add('hidden');
+        }
+
+        // Mostra a mensagem de erro/sucesso com a classe correta
+        function showMessage(status, text) {
+            console.log("Mostrando mensagem: Status '" + status + "', Texto: '" + text + "'");
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            if (status === 'failed' || status === 'error') {
+                messageDiv.classList.add('bg-red-100', 'text-red-700');
+            } else if (status === 'success') {
+                messageDiv.classList.add('bg-green-100', 'text-green-700');
+            }
+        }
+
+        // Realiza a chamada de login
+        function login() {
+            console.log("Função login() foi chamada.");
+            const username = document.getElementById('uid').value.trim();
+            const password = document.getElementById('pass').value.trim();
+            const loginBtn = document.getElementById('loginBtn');
+
+            console.log("Valores de entrada: Login = '" + username + "', Senha = '" + password + "'");
+
+            if (!username || !password) {
+                console.log("Campos de login/senha não preenchidos.");
+                showMessage('failed', 'Por favor, preencha todos os campos.');
+                return;
+            }
+
+            // Exibe o estado de carregamento do botão
+            console.log("Iniciando a chamada para o servidor...");
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Acessando...';
+
+            google.script.run
+                .withSuccessHandler(function (response) {
+                    // console.log("Resposta do servidor recebida.");
+                    console.log("Resposta do servidor: " + JSON.stringify(response));
+
+                    if (response.success === true) {
+                        console.log("Login bem-sucedido! Redirecionando..."+response.token+"&planID="+response.planID+"&expira2="+response.expira);
+                        window.top.location.href = 'https://script.google.com/macros/s/AKfycbx98E7ovfF1wVes8qsnT20bH6tbMzf9_XCZGWRquXe9ldZcfhf_C00kJRtYnUlmnXE/exec?page=main&token='+response.token+"&planID="+response.planID+"&expira2="+response.expira;
+                    } else {
+                        console.log("Login falhou. Mensagem do servidor: " + JSON.stringify(response));
+                        showMessage('failed', 'Usuário ou senha inválidos.');
+                        loginBtn.disabled = false;
+                        loginBtn.innerHTML = 'Entrar';
+                    }
+                })
+                .withFailureHandler(function (error) {
+                    console.log("Ocorreu um erro na chamada do servidor.");
+                    console.error("Detalhes do erro: ", error);
+                    showMessage('error', 'Ocorreu um erro no servidor. Tente novamente mais tarde.');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = 'Entrar';
+                })
+                .login_User(username, password);
+        }
+        
+        // Função para redirecionar para a página de registro
+        function openRegisterPage() {
+          console.log("Redirecionando para a página de registro.");
+          window.top.location.href = "https://script.google.com/macros/s/AKfycbzPghNVX53A-MXeQlvzuQ7xEsqMxHlIwhY2iM4zQdXfUXlivoHshBfn_H6mvlzcrCiWqQ/exec?page=registro";
+        }
+
+
+
+
+    </script>
+</body>
+</html>
+
+
