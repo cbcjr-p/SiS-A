@@ -1,0 +1,189 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registro</title>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8, #e4e7eb);
+        }
+
+        /* Estilos do card para todas as telas (mobile-first) */
+        .register-card {
+            width: 50vw;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .register-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Estilos para telas maiores que 990px () */
+        @media (max-width: 990px) {
+            .register-card {
+                width: 85vw;
+                //max-width: 600px; /* Definindo a largura máxima para PC */
+            }
+            /* Redimensionando fontes e elementos para PC */
+            .register-card h1 {font-size: 6vw; }
+            .register-card p {font-size: 4vw; }
+            .register-card label {font-size: 4vw; }
+            .register-card input,
+            .register-card button,
+            .register-card a {font-size: 5vw;}
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="register-card bg-white p-8 rounded-3xl shadow-xl border-t-4 border-orange-500">
+        <div class="flex flex-col items-center mb-6">
+            <h1 class="text-3xl font-bold text-center text-orange-600">Registro</h1><br>
+            <p class="text-gray-500 mt-1">Crie sua conta</p>
+        </div>
+
+        <div class="mb-4">
+            <label for="reg_empresa" class="block text-gray-700 font-medium mb-2">Empresa</label>
+            <input type="text" id="reg_empresa" placeholder="Nome da Empresa" required
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition duration-300">
+        </div>
+
+        <div class="mb-4">
+            <label for="reg_comprador" class="block text-gray-700 font-medium mb-2">Comprador</label>
+            <input type="text" id="reg_comprador" placeholder="Seu Nome Completo" required
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition duration-300">
+        </div>
+
+        <div class="mb-4">
+            <label for="reg_tel_comprador" class="block text-gray-700 font-medium mb-2">Tel Comprador</label>
+            <input type="tel" id="reg_tel_comprador" placeholder="Telefone do Comprador" required
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition duration-300">
+        </div>
+
+        <div class="mb-4">
+            <label for="reg_tel_empresa" class="block text-gray-700 font-medium mb-2">Tel Empresa</label>
+            <input type="tel" id="reg_tel_empresa" placeholder="Telefone da Empresa" required
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition duration-300">
+        </div>
+
+        <div class="mb-4">
+            <label for="reg_endereco" class="block text-gray-700 font-medium mb-2">Endereço</label>
+            <input type="text" id="reg_endereco" placeholder="Endereço Completo" required
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition duration-300">
+        </div>
+
+        <div class="mb-4">
+            <label for="reg_uid" class="block text-gray-700 font-medium mb-2">Login</label>
+            <input type="text" id="reg_uid" placeholder="Escolha um Login" required
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition duration-300">
+        </div>
+
+        <div class="mb-6">
+            <label for="reg_pass" class="block text-gray-700 font-medium mb-2">Senha</label>
+            <input type="password" id="reg_pass" placeholder="Escolha uma Senha" required
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition duration-300">
+        </div>
+
+        <div id="reg-message" class="hidden p-3 mb-4 rounded-lg text-center font-medium" role="alert"></div>
+
+        <div class="flex flex-col space-y-4">
+            <button type="button" onclick="registerUser()" id="regBtn"
+                class="w-full bg-orange-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-orange-600 transition duration-300 transform hover:scale-105">
+                Registrar
+            </button>
+            <a href="javascript:void(0)" onclick="openLoginPage()" class="text-sm text-center text-orange-500 hover:underline transition duration-300"><br>
+                Já tem conta? Entrar
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Oculta a mensagem de erro/sucesso
+        function hideRegisterMessage() {
+            const messageDiv = document.getElementById('reg-message');
+            messageDiv.classList.add('hidden');
+        }
+
+        // Mostra a mensagem de erro/sucesso com a classe correta
+        function showRegisterMessage(status, text) {
+            const messageDiv = document.getElementById('reg-message');
+            messageDiv.textContent = text;
+            messageDiv.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            if (status === 'danger') {
+                messageDiv.classList.add('bg-red-100', 'text-red-700');
+            } else if (status === 'success') {
+                messageDiv.classList.add('bg-green-100', 'text-green-700');
+            }
+        }
+
+        // Realiza a chamada de registro
+        function registerUser() {
+            const empresa = document.getElementById('reg_empresa').value.trim();
+            const comprador = document.getElementById('reg_comprador').value.trim();
+            const telComprador = document.getElementById('reg_tel_comprador').value.trim();
+            const telEmpresa = document.getElementById('reg_tel_empresa').value.trim();
+            const endereco = document.getElementById('reg_endereco').value.trim();
+            const uid = document.getElementById('reg_uid').value.trim();
+            const pass = document.getElementById('reg_pass').value.trim();
+            const regBtn = document.getElementById('regBtn');
+
+            if (!empresa || !comprador || !telComprador || !telEmpresa || !endereco || !uid || !pass) {
+                showRegisterMessage('danger', 'Por favor, preencha todos os campos.');
+                return;
+            }
+
+            regBtn.disabled = true;
+            regBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Registrando...';
+
+            const userData = {
+                empresa: empresa,
+                comprador: comprador,
+                telComprador: telComprador,
+                telEmpresa: telEmpresa,
+                endereco: endereco,
+                uid: uid,
+                pass: pass
+            };
+
+            google.script.run
+                .withSuccessHandler(function (response) {
+                    const [status, message] = response.split(',');
+                    showRegisterMessage(status, message);
+                    if (status === 'success') {
+                        // Limpa os campos após o sucesso
+                        document.getElementById('reg_empresa').value = '';
+                        document.getElementById('reg_comprador').value = '';
+                        document.getElementById('reg_tel_comprador').value = '';
+                        document.getElementById('reg_tel_empresa').value = '';
+                        document.getElementById('reg_endereco').value = '';
+                        document.getElementById('reg_uid').value = '';
+                        document.getElementById('reg_pass').value = '';
+                    }
+                    regBtn.disabled = false;
+                    regBtn.textContent = 'Registrar';
+                })
+                .withFailureHandler(function (error) {
+                    showRegisterMessage('danger', 'Ocorreu um erro no servidor. Tente novamente mais tarde.');
+                    regBtn.disabled = false;
+                    regBtn.textContent = 'Registrar';
+                })
+                .UserRegister(userData);
+        }
+
+        // Função para redirecionar para a página de login
+        function openLoginPage() {
+            window.top.location.href = "<?= myURL(); ?>";
+        }
+    </script>
+</body>
+</html>
+
